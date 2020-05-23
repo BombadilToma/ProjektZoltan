@@ -1,0 +1,56 @@
+class Player:
+    
+    loses_to = ''
+
+    def __init__(self, number, sign, opponents,lost):
+        self.number = number
+        self.sign = sign
+        self.opponents = opponents
+        self.lost = lost
+
+contenders = []
+
+n = int(input())
+for i in range(n):
+    numplayer, signplayer = input().split()
+    numplayer = int(numplayer)
+    helper_val = Player(numplayer, signplayer, [], lost = False)
+    if helper_val.sign == 'R':
+        helper_val.loses_to = 'SP'
+    elif helper_val.sign == 'L':
+        helper_val.loses_to = 'RC'
+    elif helper_val.sign == 'S':
+        helper_val.loses_to = 'LP'
+    elif helper_val.sign == 'C':
+        helper_val.loses_to = 'RS'
+    elif helper_val.sign == 'P':
+        helper_val.loses_to = 'LC'
+
+    contenders.append(helper_val)
+
+index = 0
+while len(contenders) != 1:
+    while index < len(contenders)-1:
+        if contenders[index].sign == contenders[index + 1].sign:
+            if contenders[index].number > contenders[index + 1].number:
+                contenders[index].lost = True
+                contenders[index + 1].opponents.append(str(contenders[index].number))
+                index += 2
+            else:
+                contenders[index + 1].lost = True
+                contenders[index].opponents.append(str(contenders[index + 1].number))
+                index += 2
+        elif contenders[index].sign in contenders[index + 1].loses_to:
+            contenders[index + 1].lost = True
+            contenders[index].opponents.append(str(contenders[index + 1].number))
+            index += 2
+        else:
+            contenders[index].lost = True
+            contenders[index + 1].opponents.append(str(contenders[index].number))
+            index += 2
+
+    index = 0
+    contenders = [x for x in contenders if x.lost == False]
+
+print(contenders[0].number)
+print(' '.join(contenders[0].opponents))
